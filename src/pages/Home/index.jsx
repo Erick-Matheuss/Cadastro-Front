@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import {useState, useRef } from 'react'
 import './style.css'
 import logo from './assets/logo.png';
 import api from '../../services/api'
@@ -9,6 +9,7 @@ function Home() {
 const inputName = useRef()
 const inputAge = useRef()
 const inputEmail = useRef()
+const inputSenha = useRef()
 
 
   async function getUsers(){
@@ -19,24 +20,37 @@ const inputEmail = useRef()
   }
 
   async function createUsers(){
-    await api.post('/usuarios', {
-    name: inputName.current.value,  
-    age: inputAge.current.value,
-    email: inputEmail.current.value  
-  })
     
-    getUsers()
+    try {
+      // Envia os dados para o backend
+      const response = await api.post('/user', {
+        name: inputName.current.value,
+        age: inputAge.current.value,
+        email: inputEmail.current.value,
+        password: inputSenha.current.value
+      });
+  
+      // Sucesso
+      alert('Usuário criado com sucesso!');
+    } catch (error) {
+      // Erro no backend ou na requisição
+      const errorMessage = error.response?.data?.msgUser || 'Erro ao criar usuário. Verifique os dados e tente novamente.';
+      
+      // Exibe o erro na tela
+      alert(errorMessage);
+    }
   }
 
   async function deleteUsers(id){
-   await api.delete(`/usuarios/${id}`)
+    await api.delete(`usuarios/${id}`);
+
 
    getUsers()
   }  
   
-  useEffect(() => {
-    getUsers()
-  }, [])
+  // useEffect(() => {
+  //   getUsers()
+  // }, [])
   
   
   return (
@@ -46,6 +60,7 @@ const inputEmail = useRef()
         <input placeholder="Nome" name='nome' type='text' ref={inputName}/>
         <input placeholder="Idade" name='idade' type='number' ref={inputAge}/>
         <input placeholder="E-mail" name='email' type='email' ref={inputEmail}/>
+        <input placeholder="Senha" name='Senha' type='text' ref={inputSenha}/>
         <button type='button' onClick={createUsers}>Cadastrar</button>
       </form>
 

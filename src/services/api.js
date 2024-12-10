@@ -1,7 +1,7 @@
 import axios from 'axios' 
 
 const api = axios.create({
-    baseURL: 'http://localhost:3002'
+    baseURL: 'https://back-drdb.onrender.com'
 })
 
 export default api
